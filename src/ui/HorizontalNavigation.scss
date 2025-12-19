@@ -1,0 +1,483 @@
+// src/ui/HorizontalNavigation.scss
+
+@use "sass:color";
+
+.horizontal-navigation {
+  --theme-color: #1890ff;
+  --theme-color-dark: #096dd9;
+  --border-color: #e8e8e8;
+  --hover-bg: rgba(24, 144, 255, 0.08);
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-active: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 1000;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(10px);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  // 컨테이너
+  .horizontal-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    gap: 32px;
+  }
+
+  // 헤더 (홈 버튼)
+  .horizontal-nav-header {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+
+    .home-button {
+        border: none;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: left;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        // nav-title의 투명 텍스트 효과 완전히 오버라이드
+        -webkit-text-fill-color: #1890ff !important;
+        color: #1890ff !important;
+        background: none !important;
+        -webkit-background-clip: initial !important;
+        background-clip: initial !important;
+        
+        &:hover {
+          color: #096dd9 !important;
+          -webkit-text-fill-color: #096dd9 !important;
+          transform: translateX(2px);
+        }
+        
+        &:active {
+          transform: translateX(1px);
+        }
+        
+        &:focus {
+          outline: 2px solid var(--theme-color);
+          outline-offset: 4px;
+          border-radius: 4px;
+        }
+      }
+
+      .home-icon {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .home-text {
+        line-height: 1;
+      }
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &:focus {
+        outline: 2px solid var(--theme-color);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  // 메인 메뉴 (Depth 0)
+  .horizontal-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 4px;
+    flex: 1;
+    height: 100%;
+    align-items: center;
+  }
+
+  // 메뉴 아이템 (Depth 0)
+  .horizontal-menu-item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    &.depth-0 {
+      // Depth 0 전용 스타일
+    }
+
+    // 드롭다운 있는 항목
+    &.has-dropdown {
+      .horizontal-menu-link {
+        padding-right: 32px;
+      }
+
+      .dropdown-arrow {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.2s ease;
+      }
+    }
+
+    // 호버 상태
+    &.hovered {
+      .horizontal-menu-link {
+        background: var(--hover-bg);
+        color: var(--theme-color);
+      }
+
+      .dropdown-arrow {
+        transform: translateY(-50%) rotate(180deg);
+      }
+    }
+
+    // 활성 상태
+    &.active > .horizontal-menu-link {
+      background: linear-gradient(135deg, var(--theme-color) 0%, var(--theme-color-dark) 100%);
+      color: var(--text-active);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  // 메뉴 링크 (Depth 0)
+  .horizontal-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
+    position: relative;
+
+    i {
+      font-size: 18px;
+    }
+
+    .menu-label {
+      line-height: 1;
+    }
+
+    &:hover {
+      background: var(--hover-bg);
+      color: var(--theme-color);
+    }
+
+    &:focus {
+      outline: 2px solid var(--theme-color);
+      outline-offset: 2px;
+    }
+
+    .depth-indicator {
+      margin-left: 8px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(24, 144, 255, 0.1);
+      border-radius: 4px;
+      color: var(--theme-color);
+    }
+  }
+
+  // 드롭다운 메뉴 (Depth 1+)
+  .horizontal-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    margin-top: 4px;
+    z-index: 1001;
+    animation: dropdownFadeIn 0.2s ease;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+
+    &.depth-1 {
+      // Depth 1 전용 스타일
+    }
+
+    // Depth 2 이상 (우측 확장)
+    &.depth-2,
+    &.depth-3 {
+      position: absolute;
+      top: 0;
+      left: 100%;
+      margin-top: 0;
+      margin-left: 4px;
+      animation: submenuSlideIn 0.2s ease;
+    }
+
+    .dropdown-menu {
+      list-style: none;
+      margin: 0;
+      padding: 8px 0;
+    }
+  }
+
+  // 드롭다운 아이템
+  .dropdown-item {
+    position: relative;
+
+    &.has-submenu {
+      .dropdown-link {
+        padding-right: 32px;
+
+        .submenu-arrow {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 14px;
+          color: var(--text-secondary);
+          transition: color 0.2s ease;
+        }
+      }
+    }
+
+    &.hovered > .dropdown-link {
+      background: var(--hover-bg);
+      color: var(--theme-color);
+
+      .submenu-arrow {
+        color: var(--theme-color);
+      }
+    }
+
+    &.active > .dropdown-link {
+      background: var(--hover-bg);
+      color: var(--theme-color);
+      font-weight: 600;
+    }
+  }
+
+  // 드롭다운 링크
+  .dropdown-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    gap: 8px;
+
+    i {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .menu-label {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    &:hover {
+      background: var(--hover-bg);
+      color: var(--theme-color);
+    }
+
+    &:focus {
+      outline: 2px solid var(--theme-color);
+      outline-offset: -2px;
+    }
+
+    .depth-indicator {
+      margin-left: auto;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(24, 144, 255, 0.1);
+      border-radius: 4px;
+      color: var(--theme-color);
+      flex-shrink: 0;
+    }
+  }
+
+  // 모바일 컨트롤
+  .horizontal-nav-controls {
+    display: none;
+    align-items: center;
+    flex-shrink: 0;
+
+    .mobile-menu-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 24px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+
+      .menu-icon {
+        line-height: 1;
+      }
+
+      &:hover {
+        border-color: var(--theme-color);
+        color: var(--theme-color);
+        background: var(--hover-bg);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &:focus {
+        outline: 2px solid var(--theme-color);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  // 애니메이션
+  @keyframes dropdownFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes submenuSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  // 반응형: 모바일 (768px 이하)
+  @media (max-width: 768px) {
+    .horizontal-nav-container {
+      flex-wrap: wrap;
+      padding: 12px;
+      gap: 12px;
+    }
+
+    .horizontal-nav-header {
+      flex: 1;
+    }
+
+    .horizontal-nav-controls {
+      display: flex;
+    }
+
+    .horizontal-menu {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      gap: 4px;
+
+      &.mobile-open {
+        display: flex;
+      }
+    }
+
+
+    .horizontal-menu-item {
+      width: 100%;
+      height: auto;
+
+      .horizontal-menu-link {
+        width: 100%;
+        height: 48px;
+        justify-content: space-between;
+      }
+    }
+
+    .horizontal-dropdown {
+      position: static;
+      border: none;
+      box-shadow: none;
+      margin: 0;
+      padding-left: 16px;
+      animation: none;
+
+      &.depth-2,
+      &.depth-3 {
+        position: static;
+        margin: 0;
+        padding-left: 32px;
+      }
+    }
+  }
+
+  // 반응형: 태블릿 (768px - 1024px)
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .horizontal-menu {
+      gap: 2px;
+    }
+
+    .horizontal-menu-link {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  }
+
+
+
+// 국민연금 스타일 테마 (선택사항)
+.horizontal-navigation.theme-nps {
+  --theme-color: #4486d4;
+  --theme-color-dark: #2d69c2;
+}

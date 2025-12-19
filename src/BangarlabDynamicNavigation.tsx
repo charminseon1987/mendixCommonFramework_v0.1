@@ -10,6 +10,11 @@ import { buildMenuTree, toggleMenuExpand, expandAllMenus, getExpandedMenuIds, sa
 
 import "./ui/BangarlabDynamicNavigation.scss";
 
+// Horizontal Navigation
+import { HorizontalNavigation } from "./components/HorizontalNavigation";
+
+
+
 export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationContainerProps): ReactElement {
     // State
     const [state, setState] = useState<NavigationState>({
@@ -441,6 +446,23 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         );
     }
 
+    // 상단 레이아웃 (가로형) - 새로 추가
+    if (props.layout === "horizontal" && props.position === "top") {
+        return (
+            <div className={containerClasses} style={cssVariables}>
+                <HorizontalNavigation
+                    menuTree={state.menuTree}
+                    activeMenuId={state.activeMenuId}
+                    onMenuClick={handleMenuClick}
+                    onHomeClick={handleHomeClick}
+                    maxDepth={props.maxDepth}
+                    showDepthIndicator={props.showDepthIndicator}
+                    themeColor={props.themeColor}
+                />
+            </div>
+        );
+    }
+
     // 기본 레이아웃
     return (
         <div className={containerClasses} style={cssVariables}>
@@ -452,6 +474,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                 depth={0}
                 maxDepth={props.maxDepth}
                 showDepthIndicator={props.showDepthIndicator}
+                
             />
         </div>
     );
