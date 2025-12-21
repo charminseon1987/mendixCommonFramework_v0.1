@@ -256,6 +256,11 @@
         transition: max-height var(--animation-duration) ease-out, 
                     opacity var(--animation-duration) ease-out;
       }
+      
+    // position-top 레이아웃에서는 기본 nav-submenu 스타일 오버라이드
+    &.position-top .nav-submenu {
+      overflow: visible;
+    }
   
     .nav-item {
       position: relative;
@@ -553,6 +558,7 @@
       border-bottom: 1px solid var(--border-color);
       box-shadow: var(--shadow-md);
       backdrop-filter: blur(10px);
+      overflow: visible;
 
       .nav-topbar {
         width: 100%;
@@ -628,11 +634,12 @@
       .nav-content {
         flex: 1;
         overflow-x: auto;
-        overflow-y: hidden;
+        overflow-y: visible;
         padding: 0;
         height: 100%;
         display: flex;
         align-items: center;
+        position: relative;
 
         &::-webkit-scrollbar {
           height: 4px;
@@ -733,6 +740,7 @@
                 display: none;
                 list-style: none;
                 transition: none;
+                visibility: hidden;
 
                 .nav-item {
                   border-bottom: 1px solid rgba(232, 232, 232, 0.5);
@@ -768,11 +776,13 @@
                 display: block !important;
                 max-height: none !important;
                 opacity: 1 !important;
+                visibility: visible !important;
               }
 
               // 확장되지 않은 상태에서는 서브메뉴 숨김
               &:not(.expanded) > .nav-submenu {
                 display: none !important;
+                visibility: hidden !important;
               }
             }
 
@@ -819,6 +829,7 @@
                 display: none;
                 list-style: none;
                 transition: none;
+                visibility: hidden;
 
                 .nav-item {
                   border-bottom: 1px solid rgba(232, 232, 232, 0.5);
@@ -854,11 +865,13 @@
                 display: block !important;
                 max-height: none !important;
                 opacity: 1 !important;
+                visibility: visible !important;
               }
 
               // 확장되지 않은 상태에서는 서브메뉴 숨김
               &:not(.expanded) > .nav-submenu {
                 display: none !important;
+                visibility: hidden !important;
               }
             }
           }
