@@ -441,6 +441,63 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         );
     }
 
+    // 상단 레이아웃 (가로형)
+    if (props.position === "top") {
+        return (
+            <div className={containerClasses} style={cssVariables}>
+                <nav className="nav-topbar" role="navigation" aria-label="Main navigation">
+                    {/* 헤더 */}
+                    <div className="nav-header">
+                        <button
+                            className="nav-title nav-title-button"
+                            onClick={handleHomeClick}
+                            title="홈으로 이동"
+                            aria-label="홈으로 이동"
+                            type="button"
+                        >
+                            홈
+                        </button>
+                        
+                        {/* 컨트롤 버튼 */}
+                        <div className="nav-controls">
+                            <button 
+                                className="nav-control-btn expand-all"
+                                onClick={handleExpandAll}
+                                title="모두 펼치기"
+                                aria-label="모두 펼치기"
+                                type="button"
+                            >
+                                <span className="sr-only">모두 펼치기</span>
+                            </button>
+                            <button 
+                                className="nav-control-btn collapse-all"
+                                onClick={handleCollapseAll}
+                                title="모두 접기"
+                                aria-label="모두 접기"
+                                type="button"
+                            >
+                                <span className="sr-only">모두 접기</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 메뉴 */}
+                    <div className="nav-content">
+                        <NavigationMenu
+                            menuItems={state.menuTree}
+                            activeMenuId={state.activeMenuId}
+                            onMenuClick={handleMenuClick}
+                            onToggleExpand={handleToggleExpand}
+                            depth={0}
+                            maxDepth={props.maxDepth}
+                            showDepthIndicator={props.showDepthIndicator}
+                        />
+                    </div>
+                </nav>
+            </div>
+        );
+    }
+
     // 기본 레이아웃
     return (
         <div className={containerClasses} style={cssVariables}>
