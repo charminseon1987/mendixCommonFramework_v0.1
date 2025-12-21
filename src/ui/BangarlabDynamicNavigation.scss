@@ -725,13 +725,14 @@
                 border-radius: 8px;
                 box-shadow: var(--shadow-lg);
                 z-index: 1001;
-                max-height: none;
-                opacity: 1;
+                max-height: none !important;
+                opacity: 1 !important;
                 overflow: visible;
                 padding: 8px 0;
                 margin-top: 4px;
-                display: block;
+                display: none;
                 list-style: none;
+                transition: none;
 
                 .nav-item {
                   border-bottom: 1px solid rgba(232, 232, 232, 0.5);
@@ -762,9 +763,16 @@
                 }
               }
 
+              // 확장된 상태에서는 서브메뉴 표시
+              &.expanded > .nav-submenu {
+                display: block !important;
+                max-height: none !important;
+                opacity: 1 !important;
+              }
+
               // 확장되지 않은 상태에서는 서브메뉴 숨김
               &:not(.expanded) > .nav-submenu {
-                display: none;
+                display: none !important;
               }
             }
 
@@ -803,13 +811,14 @@
                 border-radius: 8px;
                 box-shadow: var(--shadow-lg);
                 z-index: 1001;
-                max-height: none;
-                opacity: 1;
+                max-height: none !important;
+                opacity: 1 !important;
                 overflow: visible;
                 padding: 8px 0;
                 margin-top: 4px;
-                display: block;
+                display: none;
                 list-style: none;
+                transition: none;
 
                 .nav-item {
                   border-bottom: 1px solid rgba(232, 232, 232, 0.5);
@@ -840,9 +849,16 @@
                 }
               }
 
+              // 확장된 상태에서는 서브메뉴 표시
+              &.expanded > .nav-submenu {
+                display: block !important;
+                max-height: none !important;
+                opacity: 1 !important;
+              }
+
               // 확장되지 않은 상태에서는 서브메뉴 숨김
               &:not(.expanded) > .nav-submenu {
-                display: none;
+                display: none !important;
               }
             }
           }
