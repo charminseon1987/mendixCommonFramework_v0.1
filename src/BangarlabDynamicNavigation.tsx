@@ -8,6 +8,8 @@ import { NavigationMenu } from "./components/NavigationMenu";
 import { MenuItemData, NavigationState } from "./types/menu.types";
 import { buildMenuTree, toggleMenuExpand, expandAllMenus, getExpandedMenuIds, saveExpandedMenuIds, restoreMenuExpansion, loadExpandedMenuIds, saveActiveMenuId, loadActiveMenuId } from "./utils/menuHelpers";
 
+
+
 import "./ui/BangarlabDynamicNavigation.scss";
 
 export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationContainerProps): ReactElement {
