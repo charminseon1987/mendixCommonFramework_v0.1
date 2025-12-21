@@ -12,6 +12,7 @@ interface NavigationMenuProps {
   depth?: number;
   maxDepth?: number;
   showDepthIndicator?: boolean;
+  position?: string;
 }
 
 export function NavigationMenu({
@@ -21,7 +22,8 @@ export function NavigationMenu({
   onToggleExpand,
   depth = 0,
   maxDepth = 2,
-  showDepthIndicator = false
+  showDepthIndicator = false,
+  position
 }: NavigationMenuProps): ReactElement {
   if (!menuItems || menuItems.length === 0) {
     return (
@@ -44,6 +46,7 @@ export function NavigationMenu({
           depth={depth}
           maxDepth={maxDepth}
           showDepthIndicator={showDepthIndicator}
+          position={position}
         />
       ))}
     </ul>

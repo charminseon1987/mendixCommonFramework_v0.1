@@ -409,6 +409,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             depth={0}
                             maxDepth={props.maxDepth}
                             showDepthIndicator={props.showDepthIndicator}
+                            position={props.position}
                         />
                     </nav>
 
@@ -491,6 +492,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             depth={0}
                             maxDepth={props.maxDepth}
                             showDepthIndicator={props.showDepthIndicator}
+                            position={props.position}
                         />
                     </div>
                 </nav>
@@ -509,6 +511,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                 depth={0}
                 maxDepth={props.maxDepth}
                 showDepthIndicator={props.showDepthIndicator}
+                position={props.position}
             />
         </div>
     );

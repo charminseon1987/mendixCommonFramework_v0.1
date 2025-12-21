@@ -13,6 +13,7 @@ interface MenuItemProps {
   depth: number;
   maxDepth: number;
   showDepthIndicator: boolean;
+  position?: string;
 }
 
 export function MenuItem({
@@ -23,15 +24,24 @@ export function MenuItem({
   onToggleExpand,
   depth,
   maxDepth,
-  showDepthIndicator
+  showDepthIndicator,
+  position
 }: MenuItemProps): ReactElement {
   const hasChildren = item.children && item.children.length > 0;
   const canExpand = hasChildren && depth < maxDepth;
+  const isTopLayout = position === "top";
 
-    // 메뉴명 클릭 핸들러 (메뉴 클릭만, 확장/축소는 하지 않음)
+    // 메뉴명 클릭 핸들러
+    // 상단 레이아웃에서는 자식이 있으면 확장/축소도 처리
     const handleMenuClick = (e: React.MouseEvent): void => {
         e.preventDefault();
         e.stopPropagation();
+        
+        // 상단 레이아웃이고 자식이 있으면 확장/축소 토글
+        if (isTopLayout && canExpand) {
+          onToggleExpand(item.menuId);
+        }
+        
         onMenuClick(item.menuId, item.pageURL, hasChildren);
     };
 
@@ -138,6 +148,7 @@ export function MenuItem({
               depth={depth + 1}
               maxDepth={maxDepth}
               showDepthIndicator={showDepthIndicator}
+              position={position}
             />
           ))}
         </ul>
