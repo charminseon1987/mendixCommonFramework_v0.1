@@ -711,6 +711,63 @@
               }
             }
 
+            // depth-0 메뉴의 서브메뉴도 드롭다운으로 표시
+            &.depth-0 {
+              position: relative;
+
+              .nav-submenu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                min-width: 200px;
+                background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                box-shadow: var(--shadow-lg);
+                z-index: 1001;
+                max-height: none;
+                opacity: 1;
+                overflow: visible;
+                padding: 8px 0;
+                margin-top: 4px;
+                display: block;
+                list-style: none;
+
+                .nav-item {
+                  border-bottom: 1px solid rgba(232, 232, 232, 0.5);
+                  display: block;
+                  height: auto;
+                  
+                  &:last-child {
+                    border-bottom: none;
+                  }
+
+                  > .nav-item-content {
+                    padding: 12px 20px;
+                    margin: 0 8px;
+                    border-radius: 8px;
+                    height: auto;
+                    justify-content: flex-start;
+                    display: flex;
+
+                    &:hover {
+                      transform: translateX(2px);
+                    }
+                  }
+
+                  &.active > .nav-item-content {
+                    border-bottom: none;
+                    border-left: 4px solid color.scale(#1890ff, $lightness: -15%);
+                  }
+                }
+              }
+
+              // 확장되지 않은 상태에서는 서브메뉴 숨김
+              &:not(.expanded) > .nav-submenu {
+                display: none;
+              }
+            }
+
             // depth-1 이상은 드롭다운으로 표시
             &.depth-1,
             &.depth-2,
