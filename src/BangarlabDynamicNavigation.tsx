@@ -240,9 +240,9 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     }, [props.debugMode]);
 
     // 모바일 메뉴 토글
-    const handleToggleMobileMenu = useCallback(() => {
+    const handleToggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
-    }, []);
+    };
 
     // 모두 확장
     const handleExpandAll = useCallback(() => {
