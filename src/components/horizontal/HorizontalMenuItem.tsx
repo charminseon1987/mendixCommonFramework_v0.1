@@ -60,7 +60,7 @@ export function HorizontalMenuItem({
   const handleContentClick = (e: React.MouseEvent): void => {
     // 화살표 버튼 클릭이 아닐 때만 메뉴 클릭 처리
     const target = e.target as HTMLElement;
-    if (!target.closest('.nav-arrow')) {
+    if (!target.closest('.horizontal-menu-item-arrow')) {
       handleMenuClick(e);
     }
   };

@@ -26,7 +26,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     });
 
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false);
     const isInitialLoad = useRef(true);
     const previousMenuDataRef = useRef<string>(''); // 메뉴 데이터 변경 추적
 
@@ -239,10 +239,28 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         setIsCollapsed(prev => !prev);
     }, [props.debugMode]);
 
-    // 모바일 메뉴 토글
-    const handleToggleMobileMenu = useCallback(() => {
-        setIsMobileMenuOpen(prev => !prev);
+    // 메뉴 드롭다운 토글
+    const handleToggleMenuDropdown = useCallback(() => {
+        setIsMenuDropdownOpen(prev => !prev);
     }, []);
+
+    // 드롭다운 외부 클릭 시 닫기
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest('.nav-topbar-right')) {
+                setIsMenuDropdownOpen(false);
+            }
+        };
+
+        if (isMenuDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuDropdownOpen]);
 
     // 모두 확장
     const handleExpandAll = useCallback(() => {
@@ -365,8 +383,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         `position-${props.position}`,
         {
             collapsed: isCollapsed,
-            "show-depth": props.showDepthIndicator,
-            "mobile-menu-open": isMobileMenuOpen
+            "show-depth": props.showDepthIndicator
         },
         props.customClass
     );
@@ -506,23 +523,55 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             />
                         </nav>
     
-                        {/* 오른쪽: 햄버거 버튼 */}
+                        {/* 오른쪽: 컨트롤 버튼 (햄버거 아이콘) */}
                         <div className="nav-topbar-right">
-                            <span className="sr-only">{isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}</span>
-                            <button
-                                className={classNames("nav-hamburger-btn", {
-                                    "is-open": isMobileMenuOpen
-                                })}
-                                onClick={handleToggleMobileMenu}
-                                title={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-                                aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-                                aria-expanded={isMobileMenuOpen}
-                                type="button"
-                            >
-                                <span className="hamburger-line"></span>
-                                <span className="hamburger-line"></span>
-                                <span className="hamburger-line"></span>
-                            </button>
+                            {/* 컨트롤 버튼 */}
+                            <div className="nav-controls">
+                                <button 
+                                    className={classNames("nav-control-btn hamburger-btn", {
+                                        "is-open": isMenuDropdownOpen
+                                    })}
+                                    onClick={handleToggleMenuDropdown}
+                                    title="메뉴 옵션"
+                                    aria-label="메뉴 옵션"
+                                    aria-expanded={isMenuDropdownOpen}
+                                    type="button"
+                                >
+                                    <span className="hamburger-line"></span>
+                                    <span className="hamburger-line"></span>
+                                    <span className="hamburger-line"></span>
+                                </button>
+                                
+                                {/* 드롭다운 메뉴 */}
+                                {isMenuDropdownOpen && (
+                                    <div className="nav-dropdown-menu">
+                                        <button 
+                                            className="nav-dropdown-item"
+                                            onClick={() => {
+                                                handleExpandAll();
+                                                setIsMenuDropdownOpen(false);
+                                            }}
+                                            title="모두 펼치기"
+                                            aria-label="모두 펼치기"
+                                            type="button"
+                                        >
+                                            모두 펼치기
+                                        </button>
+                                        <button 
+                                            className="nav-dropdown-item"
+                                            onClick={() => {
+                                                handleCollapseAll();
+                                                setIsMenuDropdownOpen(false);
+                                            }}
+                                            title="모두 접기"
+                                            aria-label="모두 접기"
+                                            type="button"
+                                        >
+                                            모두 접기
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </header>
