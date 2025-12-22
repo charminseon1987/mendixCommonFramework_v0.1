@@ -683,6 +683,7 @@
       min-height: var(--topbar-height); // 👈 최소 높이도 고정
       max-height: var(--topbar-height); // 👈 최대 높이도 고정
       overflow: visible; // 👈 드롭다운이 잘리지 않도록
+      position: relative; // 👈 서브메뉴 위치 기준점
       
 
       .nav-topbar-inner {
@@ -759,7 +760,7 @@
         gap: 16px;
         flex:1;
         overflow: visible; // 👈 드롭다운이 잘리지 않도록
-        position: relative; // 👈 드롭다운 위치 기준점
+        position: static; // 👈 static으로 변경하여 nav-topbar 기준으로 위치
         // 가로 메뉴 스타일 추가
         .horizontal-menu-depth-0 {
           position: relative;
@@ -783,7 +784,8 @@
             align-items: flex-start;
             width: auto; // 👈 자동 너비
             min-width: fit-content; // 👈 내용에 맞는 최소 너비
-            height: auto; // 👈 높이는 자동 (드롭다운이 absolute이므로 영향 없음)
+            height: 100%; // 👈 부모 높이에 맞춤 (홈 버튼과 같은 높이 유지)
+            align-self: stretch; // 👈 부모의 높이를 따라감
           }
           
           .horizontal-menu-item-content{
@@ -795,6 +797,8 @@
             border-radius: 8px;
             transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            height: 100%; // 👈 부모 높이에 맞춤
+            box-sizing: border-box; // 👈 패딩 포함 높이 계산
             
             &:hover {
               background-color: var(--hover-bg);
@@ -858,45 +862,44 @@
             }
           }
           
-          // 서브메뉴 (header1, header2 등) - 별도 박스로 표시
+          // 서브메뉴 (header1, header2 등) - 전체 너비를 차지하는 박스로 표시
           .horizontal-menu-item-submenu {
-            position: absolute; // 👈 absolute로 변경하여 레이아웃에 영향을 주지 않음
-            top: 100%; // 👈 부모 메뉴 아이템 바로 아래에 위치
-            left: 0; // 👈 왼쪽 정렬
-            min-width: 200px;
-            width: auto; // 👈 내용에 맞는 너비
-            max-width: 300px; // 👈 최대 너비 제한
+            position: fixed; // 👈 fixed로 변경하여 전체 화면 기준으로 위치
+            top: var(--topbar-height); // 👈 nav-topbar 높이만큼 아래에 위치
+            left: 0; // 👈 왼쪽 끝부터
+            right: 0; // 👈 오른쪽 끝까지
+            width: 100vw; // 👈 전체 뷰포트 너비 사용
+            min-height: 200px; // 👈 최소 높이 설정
             background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             box-shadow: var(--shadow-lg);
-            margin-top: 8px; // 👈 상단 여백 추가
-            margin-bottom: 0;
-            z-index: 1001; // 👈 다른 요소 위에 표시
+            z-index: 999; // 👈 다른 요소 위에 표시 (topbar보다 낮게)
             list-style: none;
-            padding: 8px 0;
-            margin-left: 0;
-            margin-right: 0;
+            padding: 24px 40px; // 👈 패딩 추가
             animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; // 👈 flex 추가
-            flex-direction: column; // 👈 세로 방향으로 변경하여 HEADER1, HEADER2가 위아래로 배치되도록
-            align-items: stretch; // 👈 전체 너비 사용
-            gap: 0; // 👈 아이템 간 간격 제거
+            flex-direction: row; // 👈 가로 방향으로 변경하여 HEADER1, HEADER2가 가로로 배치되도록
+            align-items: flex-start; // 👈 상단 정렬
+            gap: 40px; // 👈 아이템 간 간격 추가
+            justify-content: flex-start; // 👈 왼쪽 정렬
+            box-sizing: border-box; // 👈 패딩 포함 크기 계산
             
             .horizontal-menu-item {
               position: relative;
-              width: 100%; // 👈 전체 너비 사용하여 세로 배치
-              min-width: 100%; // 👈 최소 너비도 전체 너비
-              border-bottom: 1px solid rgba(232, 232, 232, 0.5); // 👈 구분선 추가
+              width: auto; // 👈 자동 너비
+              min-width: 200px; // 👈 최소 너비 설정
+              flex: 0 0 auto; // 👈 flex-shrink와 flex-grow 비활성화
+              border-bottom: none; // 👈 구분선 제거
               display: flex; // 👈 flex 추가
               flex-direction: column; // 👈 세로 방향으로 하위 메뉴가 펼쳐지도록
-              align-items: stretch; // 👈 전체 너비 사용
+              align-items: flex-start; // 👈 왼쪽 정렬
               
               .horizontal-menu-item-content {
                 padding: 12px 16px;
-                width: 100%; // 👈 전체 너비 사용하여 세로 배치
+                width: 100%; // 👈 전체 너비 사용
                 min-width: 100%; // 👈 최소 너비도 전체 너비
-                border-radius: 0;
+                border-radius: 8px;
                 margin: 0;
                 white-space: nowrap; // 👈 텍스트 줄바꿈 방지
                 
@@ -906,8 +909,8 @@
                 }
                 
                 .horizontal-menu-item-label {
-                  font-size: 14px;
-                  font-weight: 500;
+                  font-size: 16px;
+                  font-weight: 600;
                   background: none;
                   -webkit-background-clip: initial;
                   -webkit-text-fill-color: initial;
@@ -921,20 +924,14 @@
                 
                 .horizontal-menu-item-label {
                   color: var(--theme-color);
-                  font-weight: 600;
+                  font-weight: 700;
                 }
               }
               
               // HEADER1의 하위 메뉴가 펼쳐질 때 HEADER2가 아래로 밀리도록
               &.expanded {
-                width: 100%; // 👈 하위 메뉴가 펼쳐질 때 전체 너비 차지
-                min-width: 100%; // 👈 최소 너비를 100%로 설정
-                border-bottom: 1px solid rgba(232, 232, 232, 0.5); // 👈 확장된 항목도 구분선 유지
-              }
-              
-              // 마지막 항목의 하단 구분선 제거
-              &:last-child {
-                border-bottom: none;
+                width: auto; // 👈 하위 메뉴가 펼쳐질 때 자동 너비
+                min-width: 200px; // 👈 최소 너비 유지
               }
               
               // depth-1의 서브메뉴는 세로로 트리 구조처럼 펼쳐짐 (HEADER1의 하위 메뉴)
@@ -944,10 +941,10 @@
                 left: 0; // 👈 왼쪽 정렬
                 width: 100%; // 👈 전체 너비 사용
                 margin-left: 0; // 👈 좌측 마진 제거
-                margin-top: 4px; // 👈 상단 마진 추가
+                margin-top: 8px; // 👈 상단 마진 추가
                 margin-bottom: 0; // 👈 하단 마진 제거
                 z-index: 1002; // 👈 더 높은 z-index
-                padding-left: 24px; // 👈 들여쓰기 추가하여 트리 구조처럼 보이도록
+                padding-left: 0; // 👈 들여쓰기 제거
                 flex-shrink: 0; // 👈 축소되지 않도록
                 // depth-2 서브메뉴는 border와 shadow 제거
                 border: none; // 👈 border 제거
@@ -959,18 +956,48 @@
                 // depth-2의 서브메뉴 아이템들 (adminpage, masterpage 등)
                 .horizontal-menu-item {
                   .horizontal-menu-item-content {
-                    padding-left: 32px; // 👈 더 깊은 들여쓰기
+                    padding-left: 24px; // 👈 bullet point를 위한 들여쓰기
                     background: transparent; // 👈 배경 투명
                     border: none; // 👈 border 제거
                     border-radius: 0; // 👈 border-radius 제거
                     box-shadow: none; // 👈 shadow 제거
+                    position: relative; // 👈 bullet point 위치 기준
+                    
+                    // bullet point 추가
+                    &::before {
+                      content: '•';
+                      position: absolute;
+                      left: 8px;
+                      color: var(--text-secondary);
+                      font-size: 16px;
+                      line-height: 1;
+                    }
                     
                     &:hover {
                       background: transparent; // 👈 호버 시에도 배경 없음
+                      
+                      &::before {
+                        color: var(--theme-color);
+                      }
                     }
                     
                     .horizontal-menu-item-label {
-                      font-size: 13px; // 👈 폰트 크기 약간 작게
+                      font-size: 14px; // 👈 폰트 크기
+                      font-weight: 400;
+                      color: var(--text-secondary);
+                    }
+                  }
+                  
+                  &.active .horizontal-menu-item-content {
+                    background: transparent;
+                    
+                    &::before {
+                      color: var(--theme-color);
+                    }
+                    
+                    .horizontal-menu-item-label {
+                      color: var(--theme-color);
+                      font-weight: 600;
                     }
                   }
                 }
