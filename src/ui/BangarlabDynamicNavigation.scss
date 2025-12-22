@@ -1023,7 +1023,8 @@
         justify-content: flex-end;
         gap: 16px;
         flex-shrink: 0;
-        position: relative;
+        position: absolute;
+        right: 20px;
 
         .nav-controls {
           position: relative;
