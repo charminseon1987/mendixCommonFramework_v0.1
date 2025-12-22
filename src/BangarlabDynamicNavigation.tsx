@@ -26,6 +26,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     });
 
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const isInitialLoad = useRef(true);
     const previousMenuDataRef = useRef<string>(''); // 메뉴 데이터 변경 추적
 
@@ -238,6 +239,11 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         setIsCollapsed(prev => !prev);
     }, [props.debugMode]);
 
+    // 모바일 메뉴 토글
+    const handleToggleMobileMenu = useCallback(() => {
+        setIsMobileMenuOpen(prev => !prev);
+    }, []);
+
     // 모두 확장
     const handleExpandAll = useCallback(() => {
         setState(prev => {
@@ -359,7 +365,8 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         `position-${props.position}`,
         {
             collapsed: isCollapsed,
-            "show-depth": props.showDepthIndicator
+            "show-depth": props.showDepthIndicator,
+            "mobile-menu-open": isMobileMenuOpen
         },
         props.customClass
     );
@@ -499,32 +506,22 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             />
                         </nav>
     
-                        {/* 오른쪽: 컨트롤 버튼 (햄버거 아이콘) */}
+                        {/* 오른쪽: 햄버거 버튼 */}
                         <div className="nav-topbar-right">
-                 
-                            {/* 컨트롤 버튼 */}
-                            <div className="nav-controls">
-                                    <button 
-                                        className="nav-control-btn expand-all"
-                                        onClick={handleExpandAll}
-                                        title="모두 펼치기"
-                                        aria-label="모두 펼치기"
-                                        type="button"
-                                    >
-                                        <span className="sr-only">모두 펼치기</span>
-                                    </button>
-                                    <button 
-                                        className="nav-control-btn collapse-all"
-                                        onClick={handleCollapseAll}
-                                        title="모두 접기"
-                                        aria-label="모두 접기"
-                                        type="button"
-                                    >
-                                        <span className="sr-only">모두 접기</span>
-                                    </button>
-                            </div>
-                          
-                           
+                            <button
+                                className={classNames("nav-hamburger-btn", {
+                                    "is-open": isMobileMenuOpen
+                                })}
+                                onClick={handleToggleMobileMenu}
+                                title={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
+                                aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
+                                aria-expanded={isMobileMenuOpen}
+                                type="button"
+                            >
+                                <span className="hamburger-line"></span>
+                                <span className="hamburger-line"></span>
+                                <span className="hamburger-line"></span>
+                            </button>
                         </div>
                     </div>
                 </header>
