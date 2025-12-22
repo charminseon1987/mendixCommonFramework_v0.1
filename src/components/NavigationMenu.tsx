@@ -12,6 +12,7 @@ interface NavigationMenuProps {
   depth?: number;
   maxDepth?: number;
   showDepthIndicator?: boolean;
+  layout?: 'vertical' | 'horizontal';
 }
 
 export function NavigationMenu({
@@ -21,7 +22,8 @@ export function NavigationMenu({
   onToggleExpand,
   depth = 0,
   maxDepth = 2,
-  showDepthIndicator = false
+  showDepthIndicator = false,
+  layout = 'vertical'
 }: NavigationMenuProps): ReactElement {
   if (!menuItems || menuItems.length === 0) {
     return (
@@ -31,6 +33,31 @@ export function NavigationMenu({
     );
   }
 
+  // // Horizontal Top Bar 렌더링 (depth 0일 때만)
+  // if (layout === 'horizontal' && depth === 0) {
+  //   return (
+  //     <nav className="horizontal-navigation" role="navigation" aria-label="Main navigation">
+  //       <ul className="horizontal-menu" role="menubar">
+  //         {menuItems.map(item => (
+  //           <MenuItem
+  //             key={item.menuId}
+  //             item={item}
+  //             isActive={activeMenuId === item.menuId}
+  //             activeMenuId={activeMenuId}
+  //             onMenuClick={onMenuClick}
+  //             onToggleExpand={onToggleExpand}
+  //             depth={depth}
+  //             maxDepth={maxDepth}
+  //             showDepthIndicator={showDepthIndicator}
+  //             layout={layout}
+  //           />
+  //         ))}
+  //       </ul>
+  //     </nav>
+  //   );
+  // }
+
+  // Vertical 또는 Horizontal의 서브메뉴 (depth 1+)
   return (
     <ul className={`nav-menu depth-${depth}`} role="menu">
       {menuItems.map(item => (
@@ -44,6 +71,7 @@ export function NavigationMenu({
           depth={depth}
           maxDepth={maxDepth}
           showDepthIndicator={showDepthIndicator}
+          layout={layout}
         />
       ))}
     </ul>

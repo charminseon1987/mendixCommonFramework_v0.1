@@ -1,10 +1,11 @@
-// src/components/MenuItem.tsx
+// src/components/horizontal/HorizontalMenuItem.tsx
 
-import { ReactElement, createElement } from 'react';
-import classNames from 'classnames';
-import { MenuTreeNode } from '../types/menu.types';
+import { ReactElement, createElement } from "react";
+import classNames from "classnames";
+import { MenuTreeNode } from "../../types/menu.types";
 
-interface MenuItemProps {
+
+interface HorizontalMenuItemProps {
   item: MenuTreeNode;
   isActive: boolean;
   activeMenuId: string | null;
@@ -16,7 +17,7 @@ interface MenuItemProps {
   layout?: 'vertical' | 'horizontal';
 }
 
-export function MenuItem({
+export function HorizontalMenuItem({
   item,
   isActive,
   activeMenuId,
@@ -25,18 +26,18 @@ export function MenuItem({
   depth,
   maxDepth,
   showDepthIndicator,
-  layout = 'vertical'
-}: MenuItemProps): ReactElement {
+  layout='horizontal'
+}: HorizontalMenuItemProps): ReactElement {
   const hasChildren = item.children && item.children.length > 0;
   const canExpand = hasChildren && depth < maxDepth;
 
-    // 메뉴명 클릭 핸들러 (메뉴 클릭만, 확장/축소는 하지 않음)
-    const handleMenuClick = (e: React.MouseEvent): void => {
-        e.preventDefault();
-        e.stopPropagation();
-        onMenuClick(item.menuId, item.pageURL, hasChildren);
-    };
 
+  // 메뉴 클릭 핸들러
+  const handleMenuClick = (e: React.MouseEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    onMenuClick(item.menuId, item.pageURL, hasChildren);
+  };
   // 화살표 버튼 클릭 핸들러 (확장/축소만)
   const handleArrowClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
@@ -47,11 +48,10 @@ export function MenuItem({
   };
 
   const itemClasses = classNames(
-    'nav-item',
+    'horizontal-menu-item',
     `depth-${depth}`,
     {
       'active': isActive,
-      'expanded': item.isExpanded,
       'has-children': hasChildren
     }
   );
@@ -71,39 +71,33 @@ export function MenuItem({
       handleMenuClick(e as any);
     }
   };
-
-  return (
-    <li className={itemClasses} data-menu-id={item.menuId}>
-      {/* nav-item-content div에 클릭 이벤트 추가 (아이콘 클릭 시에도 동작) */}
-      <div 
-        className="nav-item-content" 
-        data-menu-name={item.menuName}
-        onClick={handleContentClick}
-        onKeyDown={handleContentKeyDown}
-        role="button"
-        tabIndex={0}
-        aria-label={item.menuName}
-      >
-        {/* 아이콘 */}
-        {item.iconClass && item.iconClass.trim() !== '' && (
+  // Horizontal Top Bar 렌더링 (depth 0일 때만)
+  
+    return (
+      <li className={itemClasses} data-menu-id={item.menuId}>
+        <div 
+          className="horizontal-menu-item-content" 
+          onClick={handleContentClick} 
+          onKeyDown={handleContentKeyDown} 
+          role="button" 
+          tabIndex={0} 
+          aria-label={item.menuName}
+        >
+          {/* 아이콘 */}
+          {item.iconClass && item.iconClass.trim() !== '' && (
           <span className="nav-icon" aria-hidden="true">
             <i className={item.iconClass}></i>
           </span>
         )}
-
-        {/* 메뉴명 - aria-expanded 속성 없음 (확장/축소와 무관) */}
-        <span 
-          className="nav-label" 
-          title={item.menuName || ''}
-        >
+        {/* 메뉴명 */}
+        <span className="horizontal-menu-item-label" title={item.menuName || ''}>
           {item.menuName || '메뉴'}
         </span>
-
         {/* 확장 화살표 버튼 */}
         {canExpand && (
           <button
             type="button"
-            className={classNames('nav-arrow', {
+            className={classNames('horizontal-menu-item-arrow', {
               'expanded': item.isExpanded,
               'collapsed': !item.isExpanded
             })}
@@ -117,34 +111,31 @@ export function MenuItem({
             </svg>
           </button>
         )}
-
         {/* Depth 표시 (개발용) */}
         {showDepthIndicator && (
-          <span className="nav-depth-indicator" aria-label={`Depth ${depth}`}>
+          <span className="horizontal-menu-item-depth-indicator" aria-label={`Depth ${depth}`}>
             D{depth}
           </span>
+        )}  
+        </div>
+        {/* 자식 메뉴 - 렌더링 조건 확인 */}
+        {canExpand && item.isExpanded && item.children.length > 0 && (
+          <ul className={`horizontal-menu-item-submenu depth-${depth + 1}`} role="menu">
+            {item.children.map(child => (
+              <HorizontalMenuItem 
+                key={child.menuId} 
+                item={child} 
+                isActive={activeMenuId === child.menuId} 
+                activeMenuId={activeMenuId} 
+                onMenuClick={onMenuClick} 
+                onToggleExpand={onToggleExpand} 
+                depth={depth + 1} 
+                maxDepth={maxDepth} 
+                showDepthIndicator={showDepthIndicator} 
+                layout={layout} />
+            ))}
+          </ul>
         )}
-      </div>
-
-      {/* 자식 메뉴 - 렌더링 조건 확인 */}
-      {canExpand && item.isExpanded && item.children.length > 0 && (
-        <ul className={`nav-submenu depth-${depth + 1}`} role="menu">
-          {item.children.map(child => (
-            <MenuItem
-              key={child.menuId}
-              item={child}
-              isActive={activeMenuId === child.menuId}
-              activeMenuId={activeMenuId}
-              onMenuClick={onMenuClick}
-              onToggleExpand={onToggleExpand}
-              depth={depth + 1}
-              maxDepth={maxDepth}
-              showDepthIndicator={showDepthIndicator}
-              layout={layout}
-            />
-          ))}
-        </ul>
-      )}
-    </li>
-  );
+      </li>
+    );
 }

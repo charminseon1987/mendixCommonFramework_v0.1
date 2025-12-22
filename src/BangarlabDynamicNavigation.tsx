@@ -5,12 +5,15 @@ import classNames from "classnames";
 
 import { BangarlabDynamicNavigationContainerProps } from "./types/widget.types";
 import { NavigationMenu } from "./components/NavigationMenu";
+import { HorizontalNavigationMenu } from "./components/horizontal/HorizontalNavigationMenu";
 import { MenuItemData, NavigationState } from "./types/menu.types";
 import { buildMenuTree, toggleMenuExpand, expandAllMenus, getExpandedMenuIds, saveExpandedMenuIds, restoreMenuExpansion, loadExpandedMenuIds, saveActiveMenuId, loadActiveMenuId } from "./utils/menuHelpers";
 
 
 
 import "./ui/BangarlabDynamicNavigation.scss";
+import "./ui/HorizontalNavigation.scss";
+
 
 export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationContainerProps): ReactElement {
     // State
@@ -413,6 +416,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             showDepthIndicator={props.showDepthIndicator}
                         />
                     </nav>
+                    
 
                     {/* 토글 버튼  */}
                     {props.collapsible && (
@@ -438,7 +442,92 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             </svg>
                         </button>
                     )}
+                    
                 </aside>
+            </div>
+        );
+    }
+
+    // 상단 레이아웃 (가로형) - 새로 추가
+    // if (props.layout === "horizontal" && props.position === "top") {
+        
+        
+    //     return (
+    //         <div className={containerClasses} style={cssVariables}>
+    //             <HorizontalNavigationMenu
+    //                 menuItems={state.menuTree}
+    //                 activeMenuId={state.activeMenuId}
+    //                 onMenuClick={handleMenuClick}
+    //                 onToggleExpand={handleToggleExpand}
+    //                 depth={0}
+    //                 maxDepth={props.maxDepth}
+    //                 showDepthIndicator={props.showDepthIndicator}
+                    
+                
+    //             />
+    //         </div>
+    //     );
+    // }
+    if (props.layout === "horizontal" && props.position === "top") {
+        return (
+            <div className={containerClasses} style={cssVariables}>
+                <header className="nav-topbar" role="navigation" aria-label="Main navigation">
+                    <div className="nav-topbar-inner">
+                        {/* 왼쪽: 홈 버튼 */}
+                        <div className="nav-topbar-left">
+                            <button
+                                className="nav-title nav-title-button"
+                                onClick={handleHomeClick}
+                                title="홈으로 이동"
+                                aria-label="홈으로 이동"
+                                type="button"
+                            >
+                                홈
+                            </button>
+                        </div>
+    
+                        {/* 중앙: 메뉴 */}
+                        <nav className="nav-topbar-center">
+                            <HorizontalNavigationMenu
+                                menuItems={state.menuTree}
+                                activeMenuId={state.activeMenuId}
+                                onMenuClick={handleMenuClick}
+                                onToggleExpand={handleToggleExpand}
+                                depth={0}
+                                maxDepth={props.maxDepth}
+                                showDepthIndicator={props.showDepthIndicator}
+                            />
+                        </nav>
+    
+                        {/* 오른쪽: 컨트롤 버튼 (햄버거 아이콘) */}
+                        <div className="nav-topbar-right">
+                 
+                            {/* 컨트롤 버튼 */}
+                            <div className="nav-controls">
+                                    <button 
+                                        className="nav-control-btn expand-all"
+                                        onClick={handleExpandAll}
+                                        title="모두 펼치기"
+                                        aria-label="모두 펼치기"
+                                        type="button"
+                                    >
+                                        <span className="sr-only">모두 펼치기</span>
+                                    </button>
+                                    <button 
+                                        className="nav-control-btn collapse-all"
+                                        onClick={handleCollapseAll}
+                                        title="모두 접기"
+                                        aria-label="모두 접기"
+                                        type="button"
+                                    >
+                                        <span className="sr-only">모두 접기</span>
+                                    </button>
+                            </div>
+                          
+                           
+                        </div>
+                    </div>
+                </header>
             </div>
         );
     }
@@ -454,6 +543,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                 depth={0}
                 maxDepth={props.maxDepth}
                 showDepthIndicator={props.showDepthIndicator}
+                
             />
         </div>
     );
