@@ -67,6 +67,19 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         });
     }, [props]);
 
+    // horizontal 레이아웃일 때 body에 padding-top 추가하여 페이지 콘텐츠가 네비게이션 바 아래에 위치하도록
+    useEffect(() => {
+        if (props.layout === "horizontal" && props.position === "top") {
+            const topbarHeight = props.topbarHeight || "60px";
+            document.body.style.paddingTop = topbarHeight;
+            
+            // cleanup 함수: 컴포넌트 언마운트 시 padding 제거
+            return () => {
+                document.body.style.paddingTop = "";
+            };
+        }
+    }, [props.layout, props.position, props.topbarHeight]);
+
     // 메뉴 데이터 로드
     useEffect(() => {
         if (props.menuDataSource.status !== ValueStatus.Available) {
