@@ -7,7 +7,7 @@ import { HorizontalMenuItem } from "./HorizontalMenuItem";
 interface HorizontalNavigationMenuProps {
   menuItems: MenuTreeNode[];
   activeMenuId: string | null;
-  onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean) => void;
+  onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean, depth: number) => void;
   onToggleExpand: (menuId: string) => void;
   depth: number;
   maxDepth: number;

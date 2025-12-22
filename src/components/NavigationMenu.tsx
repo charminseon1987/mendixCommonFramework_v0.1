@@ -7,7 +7,7 @@ import { MenuTreeNode } from '../types/menu.types';
 interface NavigationMenuProps {
   menuItems: MenuTreeNode[];
   activeMenuId: string | null;
-  onMenuClick: (menuId: string, pageName: string | undefined, hasChildren: boolean) => void;
+  onMenuClick: (menuId: string, pageName: string | undefined, hasChildren: boolean, depth: number) => void;
   onToggleExpand: (menuId: string) => void;
   depth?: number;
   maxDepth?: number;

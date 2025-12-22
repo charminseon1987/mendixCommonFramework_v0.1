@@ -159,7 +159,13 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     const handleMenuClick = useCallback((
         menuId: string,
         pageURL: string | undefined,
+        hasChildren: boolean,
+        depth: number
     ) => {
+        // 마지막 depth에서 페이지 이동 시 모든 메뉴 접기
+        // depth는 0부터 시작하므로, depth === maxDepth - 1이거나 자식이 없는 경우가 마지막 depth
+        const isLastDepth = depth >= props.maxDepth - 1 || !hasChildren;
+        
         // 페이지 이동 전에 현재 확장 상태와 활성 메뉴를 localStorage에 저장
         setState(prev => {
             // 현재 확장 상태 저장
@@ -169,11 +175,17 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
             // 활성 메뉴 ID 저장
             saveActiveMenuId(menuId);
             
+            // 마지막 depth에서 페이지 이동 시 모든 메뉴 접기
+            let newTree = prev.menuTree;
+            if (isLastDepth && pageURL) {
+                newTree = expandAllMenus(prev.menuTree, false);
+                saveExpandedMenuIds([]);
+            }
+            
             return {
                 ...prev,
                 activeMenuId: menuId,
-                menuTree: prev.menuTree // 명시적으로 menuTree 유지
-                // 주의: menuTree는 변경하지 않음 - 메뉴명 클릭 시 확장/축소 없음
+                menuTree: newTree
             };
         });
 

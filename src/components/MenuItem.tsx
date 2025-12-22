@@ -8,7 +8,7 @@ interface MenuItemProps {
   item: MenuTreeNode;
   isActive: boolean;
   activeMenuId: string | null;
-  onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean) => void;
+  onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean, depth: number) => void;
   onToggleExpand: (menuId: string) => void;
   depth: number;
   maxDepth: number;
@@ -34,7 +34,7 @@ export function MenuItem({
     const handleMenuClick = (e: React.MouseEvent): void => {
         e.preventDefault();
         e.stopPropagation();
-        onMenuClick(item.menuId, item.pageURL, hasChildren);
+        onMenuClick(item.menuId, item.pageURL, hasChildren, depth);
     };
 
   // 화살표 버튼 클릭 핸들러 (확장/축소만)
