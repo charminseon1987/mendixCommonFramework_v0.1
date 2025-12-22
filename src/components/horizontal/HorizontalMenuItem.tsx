@@ -52,7 +52,8 @@ export function HorizontalMenuItem({
     `depth-${depth}`,
     {
       'active': isActive,
-      'has-children': hasChildren
+      'has-children': hasChildren,
+      'expanded': item.isExpanded // 👈 확장 상태 클래스 추가
     }
   );
 

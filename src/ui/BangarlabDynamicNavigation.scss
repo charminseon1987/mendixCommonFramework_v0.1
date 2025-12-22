@@ -869,17 +869,28 @@
             margin-right: 0;
             animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0; // 👈 축소되지 않도록
+            display: flex; // 👈 가로 배치를 위해 flex 추가
+            flex-direction: row; // 👈 가로 방향
+            flex-wrap: wrap; // 👈 필요시 줄바꿈
+            align-items: flex-start; // 👈 상단 정렬
+            gap: 8px; // 👈 아이템 간 간격
             
             .horizontal-menu-item {
               position: relative;
-              width: 100%;
+              width: auto; // 👈 자동 너비로 변경하여 가로 배치 가능하도록
+              min-width: fit-content; // 👈 내용에 맞는 최소 너비
               border-bottom: none;
+              display: flex; // 👈 flex 추가
+              flex-direction: column; // 👈 세로 방향으로 하위 메뉴가 펼쳐지도록
+              align-items: flex-start; // 👈 왼쪽 정렬
               
               .horizontal-menu-item-content {
                 padding: 12px 16px;
-                width: 100%;
+                width: auto; // 👈 자동 너비로 변경
+                min-width: fit-content; // 👈 내용에 맞는 최소 너비
                 border-radius: 0;
                 margin: 0;
+                white-space: nowrap; // 👈 텍스트 줄바꿈 방지
                 
                 &:hover {
                   background-color: var(--hover-bg);
@@ -906,6 +917,12 @@
                 }
               }
               
+              // HEADER1의 하위 메뉴가 펼쳐질 때 HEADER2가 아래로 밀리도록
+              &.expanded {
+                width: 100%; // 👈 하위 메뉴가 펼쳐질 때 전체 너비 차지
+                min-width: 100%; // 👈 최소 너비를 100%로 설정
+              }
+              
               // depth-1의 서브메뉴는 세로로 트리 구조처럼 펼쳐짐 (HEADER1의 하위 메뉴)
               .horizontal-menu-item-submenu {
                 position: relative; // 👈 상대 위치로 변경하여 세로로 펼쳐지도록
@@ -918,11 +935,25 @@
                 z-index: 1002; // 👈 더 높은 z-index
                 padding-left: 24px; // 👈 들여쓰기 추가하여 트리 구조처럼 보이도록
                 flex-shrink: 0; // 👈 축소되지 않도록
+                // depth-2 서브메뉴는 border와 shadow 제거
+                border: none; // 👈 border 제거
+                border-radius: 0; // 👈 border-radius 제거
+                box-shadow: none; // 👈 shadow 제거
+                background: transparent; // 👈 배경 투명
+                padding: 0; // 👈 padding 제거
                 
                 // depth-2의 서브메뉴 아이템들 (adminpage, masterpage 등)
                 .horizontal-menu-item {
                   .horizontal-menu-item-content {
                     padding-left: 32px; // 👈 더 깊은 들여쓰기
+                    background: transparent; // 👈 배경 투명
+                    border: none; // 👈 border 제거
+                    border-radius: 0; // 👈 border-radius 제거
+                    box-shadow: none; // 👈 shadow 제거
+                    
+                    &:hover {
+                      background: transparent; // 👈 호버 시에도 배경 없음
+                    }
                     
                     .horizontal-menu-item-label {
                       font-size: 13px; // 👈 폰트 크기 약간 작게
