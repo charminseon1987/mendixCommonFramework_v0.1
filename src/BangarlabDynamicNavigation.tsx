@@ -240,9 +240,9 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     }, [props.debugMode]);
 
     // 모바일 메뉴 토글
-    const handleToggleMobileMenu = () => {
+    const handleToggleMobileMenu = useCallback(() => {
         setIsMobileMenuOpen(prev => !prev);
-    };
+    }, []);
 
     // 모두 확장
     const handleExpandAll = useCallback(() => {
@@ -508,6 +508,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     
                         {/* 오른쪽: 햄버거 버튼 */}
                         <div className="nav-topbar-right">
+                            <span className="sr-only">{isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}</span>
                             <button
                                 className={classNames("nav-hamburger-btn", {
                                     "is-open": isMobileMenuOpen
