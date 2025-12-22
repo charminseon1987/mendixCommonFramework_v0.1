@@ -849,8 +849,8 @@
           
           // 서브메뉴 (header1, header2 등)
           .horizontal-menu-item-submenu {
-            position: absolute; // 👈 절대 위치
-            top: 100%; // 👈 부모 메뉴 아래
+            position: relative; // 👈 상대 위치로 변경하여 HEADER2를 아래로 밀어냄
+            top: 0; // 👈 top 제거
             left: 0; // 👈 왼쪽 정렬
             min-width: 200px;
             background: white;
@@ -898,6 +898,16 @@
                   color: var(--theme-color);
                   font-weight: 600;
                 }
+              }
+              
+              // depth-1의 서브메뉴는 우측으로 확장 (HEADER1의 하위 메뉴)
+              .horizontal-menu-item-submenu {
+                position: absolute; // 👈 depth-1의 서브메뉴는 절대 위치 유지
+                top: 0; // 👈 상단 정렬
+                left: 100%; // 👈 우측으로 확장
+                margin-left: 4px; // 👈 간격 추가
+                margin-top: 0; // 👈 상단 마진 제거
+                z-index: 1002; // 👈 더 높은 z-index
               }
             }
           }
@@ -1064,3 +1074,4 @@
       }
     }
   }
+}

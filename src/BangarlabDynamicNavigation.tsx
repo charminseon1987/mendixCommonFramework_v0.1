@@ -239,9 +239,40 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         setIsCollapsed(prev => !prev);
     }, [props.debugMode]);
 
-    // 메뉴 드롭다운 토글
+    // 메뉴 드롭다운 토글 (햄버거 버튼 클릭 시 모두 펼치기, X 버튼 클릭 시 모두 접기)
     const handleToggleMenuDropdown = useCallback(() => {
-        setIsMenuDropdownOpen(prev => !prev);
+        setIsMenuDropdownOpen(prev => {
+            const willBeOpen = !prev;
+            
+            // 햄버거 버튼 클릭 시 (드롭다운이 열릴 때): 모든 메뉴 펼치기
+            if (willBeOpen) {
+                setState(currentState => {
+                    const newTree = expandAllMenus(currentState.menuTree, true);
+                    const expandedIds = getExpandedMenuIds(newTree);
+                    saveExpandedMenuIds(expandedIds);
+                    
+                    return {
+                        ...currentState,
+                        menuTree: newTree
+                    };
+                });
+            } 
+            // X 버튼 클릭 시 (드롭다운이 닫힐 때): 모든 메뉴 접기
+            else {
+                setState(currentState => {
+                    const newTree = expandAllMenus(currentState.menuTree, false);
+                    const expandedIds = getExpandedMenuIds(newTree);
+                    saveExpandedMenuIds(expandedIds);
+                    
+                    return {
+                        ...currentState,
+                        menuTree: newTree
+                    };
+                });
+            }
+            
+            return willBeOpen;
+        });
     }, []);
 
     // 드롭다운 외부 클릭 시 닫기
