@@ -869,25 +869,24 @@
             margin-right: 0;
             animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0; // 👈 축소되지 않도록
-            display: flex; // 👈 가로 배치를 위해 flex 추가
-            flex-direction: row; // 👈 가로 방향
-            flex-wrap: wrap; // 👈 필요시 줄바꿈
-            align-items: flex-start; // 👈 상단 정렬
-            gap: 8px; // 👈 아이템 간 간격
+            display: flex; // 👈 flex 추가
+            flex-direction: column; // 👈 세로 방향으로 변경하여 HEADER1, HEADER2가 위아래로 배치되도록
+            align-items: stretch; // 👈 전체 너비 사용
+            gap: 0; // 👈 아이템 간 간격 제거
             
             .horizontal-menu-item {
               position: relative;
-              width: auto; // 👈 자동 너비로 변경하여 가로 배치 가능하도록
-              min-width: fit-content; // 👈 내용에 맞는 최소 너비
-              border-bottom: none;
+              width: 100%; // 👈 전체 너비 사용하여 세로 배치
+              min-width: 100%; // 👈 최소 너비도 전체 너비
+              border-bottom: 1px solid rgba(232, 232, 232, 0.5); // 👈 구분선 추가
               display: flex; // 👈 flex 추가
               flex-direction: column; // 👈 세로 방향으로 하위 메뉴가 펼쳐지도록
-              align-items: flex-start; // 👈 왼쪽 정렬
+              align-items: stretch; // 👈 전체 너비 사용
               
               .horizontal-menu-item-content {
                 padding: 12px 16px;
-                width: auto; // 👈 자동 너비로 변경
-                min-width: fit-content; // 👈 내용에 맞는 최소 너비
+                width: 100%; // 👈 전체 너비 사용하여 세로 배치
+                min-width: 100%; // 👈 최소 너비도 전체 너비
                 border-radius: 0;
                 margin: 0;
                 white-space: nowrap; // 👈 텍스트 줄바꿈 방지
@@ -921,6 +920,12 @@
               &.expanded {
                 width: 100%; // 👈 하위 메뉴가 펼쳐질 때 전체 너비 차지
                 min-width: 100%; // 👈 최소 너비를 100%로 설정
+                border-bottom: 1px solid rgba(232, 232, 232, 0.5); // 👈 확장된 항목도 구분선 유지
+              }
+              
+              // 마지막 항목의 하단 구분선 제거
+              &:last-child {
+                border-bottom: none;
               }
               
               // depth-1의 서브메뉴는 세로로 트리 구조처럼 펼쳐짐 (HEADER1의 하위 메뉴)
