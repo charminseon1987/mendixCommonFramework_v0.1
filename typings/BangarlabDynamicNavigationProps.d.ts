@@ -4,8 +4,7 @@
  * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
-import { ActionValue, ListValue, ListAttributeValue } from "mendix";
-import { Big } from "big.js";
+import { ActionValue, ListValue } from "mendix";
 
 export interface CurrentUserType {
 
@@ -26,20 +25,7 @@ export interface BangarlabDynamicNavigationContainerProps {
     tabIndex?: number;
     menuDataSource: ListValue;
     currentUser: CurrentUserType[];
-    menuId: ListAttributeValue<string>;
-    menuName: ListAttributeValue<string>;
-    menuDepth: ListAttributeValue<Big>;
-    parentMenuId: ListAttributeValue<string>;
-    sortNo: ListAttributeValue<Big>;
-    leftNo?: ListAttributeValue<Big>;
-    rightNo?: ListAttributeValue<Big>;
-    displayYn?: ListAttributeValue<string>;
-    enabledTF?: ListAttributeValue<boolean>;
-    resourceName?: ListAttributeValue<string>;
-    resourceType?: ListAttributeValue<string>;
-    pageURL?: ListAttributeValue<string>;
-    iconClass?: ListAttributeValue<string>;
-    resourceEnabledTF?: ListAttributeValue<boolean>;
+    Resource: ListValue;
     layout: LayoutEnum;
     position: PositionEnum;
     sidebarWidth: string;
@@ -73,20 +59,7 @@ export interface BangarlabDynamicNavigationPreviewProps {
     translate: (text: string) => string;
     menuDataSource: {} | { caption: string } | { type: string } | null;
     currentUser: CurrentUserPreviewType[];
-    menuId: string;
-    menuName: string;
-    menuDepth: string;
-    parentMenuId: string;
-    sortNo: string;
-    leftNo: string;
-    rightNo: string;
-    displayYn: string;
-    enabledTF: string;
-    resourceName: string;
-    resourceType: string;
-    pageURL: string;
-    iconClass: string;
-    resourceEnabledTF: string;
+    Resource: {} | { caption: string } | { type: string } | null;
     layout: LayoutEnum;
     position: PositionEnum;
     sidebarWidth: string;

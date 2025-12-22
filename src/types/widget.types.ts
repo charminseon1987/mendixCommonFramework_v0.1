@@ -11,7 +11,7 @@ export interface BangarlabDynamicNavigationContainerProps {
   // Data Source
   menuDataSource: ListValue;
   currentUser?: ListValue;
-  
+  Resource?: ListValue;
   // Attributes
   menuId: ListAttributeValue<string>;
   menuName: ListAttributeValue<string>;
