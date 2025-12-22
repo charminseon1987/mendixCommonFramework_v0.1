@@ -679,6 +679,10 @@
       border-bottom: 1px solid var(--border-color);
       background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(10px);
+      height: var(--topbar-height); // 👈 고정 높이 설정
+      min-height: var(--topbar-height); // 👈 최소 높이도 고정
+      max-height: var(--topbar-height); // 👈 최대 높이도 고정
+      overflow: visible; // 👈 드롭다운이 잘리지 않도록
       
 
       .nav-topbar-inner {
@@ -754,18 +758,22 @@
         justify-content: center;
         gap: 16px;
         flex:1;
+        overflow: visible; // 👈 드롭다운이 잘리지 않도록
+        position: relative; // 👈 드롭다운 위치 기준점
         // 가로 메뉴 스타일 추가
         .horizontal-menu-depth-0 {
           position: relative;
           display: flex; // 👈 가로 정렬
           flex-direction: row; // 👈 가로 방향
-          align-items: flex-start; // 👈 상단 정렬로 변경하여 서브메뉴가 아래로 나오도록
+          align-items: center; // 👈 중앙 정렬로 변경하여 높이 고정 유지
           gap: 8px; // 메뉴 간 간격
           list-style: none;
           margin: 0;
           padding: 0;
           justify-content: center;
           padding: 8px 30px;
+          height: 100%; // 👈 부모 높이에 맞춤
+          overflow: visible; // 👈 드롭다운이 잘리지 않도록
           
           // 메뉴 아이템 (HOME1, HOME2 등)
           .horizontal-menu-item {
@@ -775,6 +783,7 @@
             align-items: flex-start;
             width: auto; // 👈 자동 너비
             min-width: fit-content; // 👈 내용에 맞는 최소 너비
+            height: auto; // 👈 높이는 자동 (드롭다운이 absolute이므로 영향 없음)
           }
           
           .horizontal-menu-item-content{
@@ -849,26 +858,26 @@
             }
           }
           
-          // 서브메뉴 (header1, header2 등)
+          // 서브메뉴 (header1, header2 등) - 별도 박스로 표시
           .horizontal-menu-item-submenu {
-            position: relative; // 👈 상대 위치로 변경하여 HEADER2를 아래로 밀어냄
-            top: 0; // 👈 top 제거
+            position: absolute; // 👈 absolute로 변경하여 레이아웃에 영향을 주지 않음
+            top: 100%; // 👈 부모 메뉴 아이템 바로 아래에 위치
             left: 0; // 👈 왼쪽 정렬
             min-width: 200px;
-            width: 100%; // 👈 전체 너비 사용
+            width: auto; // 👈 내용에 맞는 너비
+            max-width: 300px; // 👈 최대 너비 제한
             background: white;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: var(--shadow-lg);
-            margin-top: 4px;
-            margin-bottom: 0; // 👈 하단 마진 제거
-            z-index: 1001;
+            margin-top: 8px; // 👈 상단 여백 추가
+            margin-bottom: 0;
+            z-index: 1001; // 👈 다른 요소 위에 표시
             list-style: none;
             padding: 8px 0;
             margin-left: 0;
             margin-right: 0;
             animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            flex-shrink: 0; // 👈 축소되지 않도록
             display: flex; // 👈 flex 추가
             flex-direction: column; // 👈 세로 방향으로 변경하여 HEADER1, HEADER2가 위아래로 배치되도록
             align-items: stretch; // 👈 전체 너비 사용
