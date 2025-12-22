@@ -26,7 +26,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     });
 
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false);
+    const [isAllExpanded, setIsAllExpanded] = useState(false);
     const isInitialLoad = useRef(true);
     const previousMenuDataRef = useRef<string>(''); // 메뉴 데이터 변경 추적
 
@@ -239,59 +239,25 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         setIsCollapsed(prev => !prev);
     }, [props.debugMode]);
 
-    // 메뉴 드롭다운 토글 (햄버거 버튼 클릭 시 모두 펼치기, X 버튼 클릭 시 모두 접기)
+    // 햄버거 버튼으로 모든 메뉴 펼치기/접기 토글
     const handleToggleMenuDropdown = useCallback(() => {
-        setIsMenuDropdownOpen(prev => {
-            const willBeOpen = !prev;
-            
-            // 햄버거 버튼 클릭 시 (드롭다운이 열릴 때): 모든 메뉴 펼치기
-            if (willBeOpen) {
-                setState(currentState => {
-                    const newTree = expandAllMenus(currentState.menuTree, true);
-                    const expandedIds = getExpandedMenuIds(newTree);
-                    saveExpandedMenuIds(expandedIds);
-                    
-                    return {
-                        ...currentState,
-                        menuTree: newTree
-                    };
-                });
-            } 
-            // X 버튼 클릭 시 (드롭다운이 닫힐 때): 모든 메뉴 접기
-            else {
-                setState(currentState => {
-                    const newTree = expandAllMenus(currentState.menuTree, false);
-                    const expandedIds = getExpandedMenuIds(newTree);
-                    saveExpandedMenuIds(expandedIds);
-                    
-                    return {
-                        ...currentState,
-                        menuTree: newTree
-                    };
-                });
-            }
-            
-            return willBeOpen;
+        setIsAllExpanded(prev => {
+            const willExpand = !prev;
+
+            setState(currentState => {
+                const newTree = expandAllMenus(currentState.menuTree, willExpand);
+                const expandedIds = getExpandedMenuIds(newTree);
+                saveExpandedMenuIds(expandedIds);
+
+                return {
+                    ...currentState,
+                    menuTree: newTree
+                };
+            });
+
+            return willExpand;
         });
     }, []);
-
-    // 드롭다운 외부 클릭 시 닫기
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-            if (!target.closest('.nav-topbar-right')) {
-                setIsMenuDropdownOpen(false);
-            }
-        };
-
-        if (isMenuDropdownOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isMenuDropdownOpen]);
 
     // 모두 확장
     const handleExpandAll = useCallback(() => {
@@ -558,50 +524,19 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                         <div className="nav-topbar-right">
                             {/* 컨트롤 버튼 */}
                             <div className="nav-controls">
-                                <button 
+                                <button
                                     className={classNames("nav-control-btn hamburger-btn", {
-                                        "is-open": isMenuDropdownOpen
+                                        "is-open": isAllExpanded
                                     })}
                                     onClick={handleToggleMenuDropdown}
-                                    title="메뉴 옵션"
-                                    aria-label="메뉴 옵션"
-                                    aria-expanded={isMenuDropdownOpen}
+                                    title={isAllExpanded ? "모두 접기" : "모두 펼치기"}
+                                    aria-label={isAllExpanded ? "모두 접기" : "모두 펼치기"}
                                     type="button"
                                 >
                                     <span className="hamburger-line"></span>
                                     <span className="hamburger-line"></span>
                                     <span className="hamburger-line"></span>
                                 </button>
-                                
-                                {/* 드롭다운 메뉴 */}
-                                {isMenuDropdownOpen && (
-                                    <div className="nav-dropdown-menu">
-                                        <button 
-                                            className="nav-dropdown-item"
-                                            onClick={() => {
-                                                handleExpandAll();
-                                                setIsMenuDropdownOpen(false);
-                                            }}
-                                            title="모두 펼치기"
-                                            aria-label="모두 펼치기"
-                                            type="button"
-                                        >
-                                            모두 펼치기
-                                        </button>
-                                        <button 
-                                            className="nav-dropdown-item"
-                                            onClick={() => {
-                                                handleCollapseAll();
-                                                setIsMenuDropdownOpen(false);
-                                            }}
-                                            title="모두 접기"
-                                            aria-label="모두 접기"
-                                            type="button"
-                                        >
-                                            모두 접기
-                                        </button>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>

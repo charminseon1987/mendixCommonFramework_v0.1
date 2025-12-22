@@ -773,6 +773,8 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            width: auto; // 👈 자동 너비
+            min-width: fit-content; // 👈 내용에 맞는 최소 너비
           }
           
           .horizontal-menu-item-content{
@@ -853,16 +855,20 @@
             top: 0; // 👈 top 제거
             left: 0; // 👈 왼쪽 정렬
             min-width: 200px;
+            width: 100%; // 👈 전체 너비 사용
             background: white;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: var(--shadow-lg);
             margin-top: 4px;
+            margin-bottom: 0; // 👈 하단 마진 제거
             z-index: 1001;
             list-style: none;
             padding: 8px 0;
-            margin: 0;
+            margin-left: 0;
+            margin-right: 0;
             animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0; // 👈 축소되지 않도록
             
             .horizontal-menu-item {
               position: relative;
@@ -900,14 +906,29 @@
                 }
               }
               
-              // depth-1의 서브메뉴는 우측으로 확장 (HEADER1의 하위 메뉴)
+              // depth-1의 서브메뉴는 세로로 트리 구조처럼 펼쳐짐 (HEADER1의 하위 메뉴)
               .horizontal-menu-item-submenu {
-                position: absolute; // 👈 depth-1의 서브메뉴는 절대 위치 유지
-                top: 0; // 👈 상단 정렬
-                left: 100%; // 👈 우측으로 확장
-                margin-left: 4px; // 👈 간격 추가
-                margin-top: 0; // 👈 상단 마진 제거
+                position: relative; // 👈 상대 위치로 변경하여 세로로 펼쳐지도록
+                top: 0; // 👈 top 제거
+                left: 0; // 👈 왼쪽 정렬
+                width: 100%; // 👈 전체 너비 사용
+                margin-left: 0; // 👈 좌측 마진 제거
+                margin-top: 4px; // 👈 상단 마진 추가
+                margin-bottom: 0; // 👈 하단 마진 제거
                 z-index: 1002; // 👈 더 높은 z-index
+                padding-left: 24px; // 👈 들여쓰기 추가하여 트리 구조처럼 보이도록
+                flex-shrink: 0; // 👈 축소되지 않도록
+                
+                // depth-2의 서브메뉴 아이템들 (adminpage, masterpage 등)
+                .horizontal-menu-item {
+                  .horizontal-menu-item-content {
+                    padding-left: 32px; // 👈 더 깊은 들여쓰기
+                    
+                    .horizontal-menu-item-label {
+                      font-size: 13px; // 👈 폰트 크기 약간 작게
+                    }
+                  }
+                }
               }
             }
           }
