@@ -1,20 +1,20 @@
 // src/components/horizontal/HorizontalMenuItem.tsx
 
-import { ReactElement, createElement, useCallback } from "react";
+import { ReactElement, createElement } from "react";
 import classNames from "classnames";
 import { MenuTreeNode } from "../../types/menu.types";
-import { HorizontalDropdown } from "./HorizontalDropdown";
+
 
 interface HorizontalMenuItemProps {
   item: MenuTreeNode;
   isActive: boolean;
   activeMenuId: string | null;
   onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean) => void;
-  onMenuToggle: (menuId: string) => void;
-  isExpanded: boolean;
+  onToggleExpand: (menuId: string) => void;
   depth: number;
   maxDepth: number;
   showDepthIndicator: boolean;
+  layout?: 'vertical' | 'horizontal';
 }
 
 export function HorizontalMenuItem({
@@ -22,138 +22,120 @@ export function HorizontalMenuItem({
   isActive,
   activeMenuId,
   onMenuClick,
-  onMenuToggle,
-  isExpanded,
+  onToggleExpand,
   depth,
   maxDepth,
-  showDepthIndicator
+  showDepthIndicator,
+  layout='horizontal'
 }: HorizontalMenuItemProps): ReactElement {
   const hasChildren = item.children && item.children.length > 0;
   const canExpand = hasChildren && depth < maxDepth;
 
-  // 메뉴명 클릭 핸들러 (자식 없으면 페이지 이동, 있으면 토글)
-  const handleClick = useCallback((e: React.MouseEvent) => {
+
+  // 메뉴 클릭 핸들러
+  const handleMenuClick = (e: React.MouseEvent): void => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (hasChildren) {
-      // 자식 메뉴가 있으면 드롭다운 토글
-      onMenuToggle(item.menuId);
-    } else {
-      // 자식 메뉴가 없으면 페이지 이동
-      onMenuClick(item.menuId, item.pageURL, false);
-    }
-  }, [hasChildren, item.menuId, item.pageURL, onMenuClick, onMenuToggle]);
-
-  // 화살표 버튼 클릭 핸들러 (드롭다운 토글만)
-  const handleArrowClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    onMenuClick(item.menuId, item.pageURL, hasChildren);
+  };
+  // 화살표 버튼 클릭 핸들러 (확장/축소만)
+  const handleArrowClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     e.stopPropagation();
-
     if (canExpand) {
-      onMenuToggle(item.menuId);
+      onToggleExpand(item.menuId);
     }
-  }, [canExpand, item.menuId, onMenuToggle]);
-
-  // 키보드 핸들러
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    switch(e.key) {
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        handleClick(e as any);
-        break;
-      case 'ArrowDown':
-        if (canExpand && !isExpanded) {
-          e.preventDefault();
-          onMenuToggle(item.menuId);
-        }
-        break;
-      case 'Escape':
-        if (isExpanded) {
-          e.preventDefault();
-          onMenuToggle(item.menuId);
-        }
-        break;
-    }
-  }, [canExpand, handleClick, isExpanded, item.menuId, onMenuToggle]);
+  };
 
   const itemClasses = classNames(
     'horizontal-menu-item',
     `depth-${depth}`,
     {
       'active': isActive,
-      'has-dropdown': canExpand,
-      'expanded': isExpanded
+      'has-children': hasChildren
     }
   );
 
-  return (
-    <li
-      className={itemClasses}
-      role="none"
-    >
-      <div
-        className="horizontal-menu-link"
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        role="menuitem"
-        tabIndex={0}
-        aria-label={item.menuName}
-        // aria-haspopup={canExpand}
-        // aria-expanded={isHovered}
-      >
-        {/* 아이콘 */}
-        {item.iconClass && item.iconClass.trim() !== '' && (
-          <span className="nav-icon" aria-hidden="true">
+  // nav-item-content 클릭 핸들러 (아이콘 영역 클릭 시에도 메뉴 클릭 동작)
+  const handleContentClick = (e: React.MouseEvent): void => {
+    // 화살표 버튼 클릭이 아닐 때만 메뉴 클릭 처리
+    const target = e.target as HTMLElement;
+    if (!target.closest('.nav-arrow')) {
+      handleMenuClick(e);
+    }
+  };
 
-          <i className={item.iconClass} aria-hidden="true"></i>
+  const handleContentKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleMenuClick(e as any);
+    }
+  };
+  // Horizontal Top Bar 렌더링 (depth 0일 때만)
+  
+    return (
+      <li className={itemClasses} data-menu-id={item.menuId}>
+        <div 
+          className="horizontal-menu-item-content" 
+          onClick={handleContentClick} 
+          onKeyDown={handleContentKeyDown} 
+          role="button" 
+          tabIndex={0} 
+          aria-label={item.menuName}
+        >
+          {/* 아이콘 */}
+          {item.iconClass && item.iconClass.trim() !== '' && (
+          <span className="nav-icon" aria-hidden="true">
+            <i className={item.iconClass}></i>
           </span>
         )}
-
         {/* 메뉴명 */}
-        <span className="menu-label">{item.menuName || '메뉴'}</span>
-
-        {/* 드롭다운 화살표 */}
+        <span className="horizontal-menu-item-label" title={item.menuName || ''}>
+          {item.menuName || '메뉴'}
+        </span>
+        {/* 확장 화살표 버튼 */}
         {canExpand && (
           <button
             type="button"
-            className={classNames('dropdown-arrow', {
-              'expanded': isExpanded,
-              'collapsed': !isExpanded
+            className={classNames('horizontal-menu-item-arrow', {
+              'expanded': item.isExpanded,
+              'collapsed': !item.isExpanded
             })}
             onClick={handleArrowClick}
-            aria-expanded={isExpanded}
-            aria-label={isExpanded ? '드롭다운 닫기' : '드롭다운 열기'}
+            aria-expanded={item.isExpanded}
+            aria-label={item.isExpanded ? '메뉴 접기' : '메뉴 펼치기'}
             aria-hidden="false"
           >
-            <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor">
-              <path d="M5 6L0 0h10z" />
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <path d="M6 9L1 4h10z" />
             </svg>
           </button>
         )}
-
         {/* Depth 표시 (개발용) */}
         {showDepthIndicator && (
-          <span className="depth-indicator" aria-label={`Depth ${depth}`}>
+          <span className="horizontal-menu-item-depth-indicator" aria-label={`Depth ${depth}`}>
             D{depth}
           </span>
+        )}  
+        </div>
+        {/* 자식 메뉴 - 렌더링 조건 확인 */}
+        {canExpand && item.isExpanded && item.children.length > 0 && (
+          <ul className={`horizontal-menu-item-submenu depth-${depth + 1}`} role="menu">
+            {item.children.map(child => (
+              <HorizontalMenuItem 
+                key={child.menuId} 
+                item={child} 
+                isActive={activeMenuId === child.menuId} 
+                activeMenuId={activeMenuId} 
+                onMenuClick={onMenuClick} 
+                onToggleExpand={onToggleExpand} 
+                depth={depth + 1} 
+                maxDepth={maxDepth} 
+                showDepthIndicator={showDepthIndicator} 
+                layout={layout} />
+            ))}
+          </ul>
         )}
-      </div>
-
-      {/* 드롭다운 메뉴 */}
-      {canExpand && isExpanded && (
-        <HorizontalDropdown
-          items={item.children}
-          activeMenuId={activeMenuId}
-          onMenuClick={onMenuClick}
-          onMenuToggle={onMenuToggle}
-          parentMenuId={item.menuId}
-          depth={depth + 1}
-          maxDepth={maxDepth}
-          showDepthIndicator={showDepthIndicator}
-        />
-      )}
-    </li>
-  );
+      </li>
+    );
 }

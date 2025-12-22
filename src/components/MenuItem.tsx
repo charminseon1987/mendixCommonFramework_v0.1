@@ -13,6 +13,7 @@ interface MenuItemProps {
   depth: number;
   maxDepth: number;
   showDepthIndicator: boolean;
+  layout?: 'vertical' | 'horizontal';
 }
 
 export function MenuItem({
@@ -23,7 +24,8 @@ export function MenuItem({
   onToggleExpand,
   depth,
   maxDepth,
-  showDepthIndicator
+  showDepthIndicator,
+  layout = 'vertical'
 }: MenuItemProps): ReactElement {
   const hasChildren = item.children && item.children.length > 0;
   const canExpand = hasChildren && depth < maxDepth;
@@ -138,6 +140,7 @@ export function MenuItem({
               depth={depth + 1}
               maxDepth={maxDepth}
               showDepthIndicator={showDepthIndicator}
+              layout={layout}
             />
           ))}
         </ul>

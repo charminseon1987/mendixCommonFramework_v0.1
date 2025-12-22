@@ -10,6 +10,7 @@ interface HorizontalNavigationProps {
   menuTree: MenuTreeNode[];
   activeMenuId: string | null;
   onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean) => void;
+  onToggleExpand: (menuId: string) => void;
   onHomeClick: () => void;
   maxDepth: number;
   showDepthIndicator: boolean;
@@ -20,6 +21,7 @@ export function HorizontalNavigation({
   menuTree,
   activeMenuId,
   onMenuClick,
+  onToggleExpand,
   onHomeClick,
   maxDepth,
   showDepthIndicator,
@@ -28,9 +30,6 @@ export function HorizontalNavigation({
   // 모바일 메뉴 토글 상태
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // 클릭으로 확장된 메뉴 ID (드롭다운 표시용)
-  const [expandedMenuId, setExpandedMenuId] = useState<string | null>(null);
-
   // 모바일 메뉴 토글
   const handleToggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
@@ -38,8 +37,9 @@ export function HorizontalNavigation({
 
   // 메뉴 클릭으로 토글 (열기/닫기)
   const handleMenuToggle = useCallback((menuId: string) => {
-    setExpandedMenuId(prev => prev === menuId ? null : menuId);
-  }, []);
+    onToggleExpand(menuId);
+  }, [onToggleExpand]);
+  
 
   return (
     <nav
@@ -77,8 +77,7 @@ export function HorizontalNavigation({
               isActive={activeMenuId === item.menuId}
               activeMenuId={activeMenuId}
               onMenuClick={onMenuClick}
-              onMenuToggle={handleMenuToggle}
-              isExpanded={expandedMenuId === item.menuId}
+              onToggleExpand={handleMenuToggle}
               depth={0}
               maxDepth={maxDepth}
               showDepthIndicator={showDepthIndicator}
