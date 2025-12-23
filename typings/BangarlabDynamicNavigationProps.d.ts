@@ -11,9 +11,7 @@ export interface CurrentUserType {
 
 }
 
-export type LayoutEnum = "vertical" | "horizontal";
-
-export type PositionEnum = "left" | "top";
+export type LayoutEnum = "vertical" | "horizontal" | "topbar_fullwidth";
 
 export interface CurrentUserPreviewType {
 
@@ -41,7 +39,6 @@ export interface BangarlabDynamicNavigationContainerProps {
     iconClass?: ListAttributeValue<string>;
     resourceEnabledTF?: ListAttributeValue<boolean>;
     layout: LayoutEnum;
-    position: PositionEnum;
     sidebarWidth: string;
     topbarHeight: string;
     collapsible: boolean;
@@ -88,7 +85,6 @@ export interface BangarlabDynamicNavigationPreviewProps {
     iconClass: string;
     resourceEnabledTF: string;
     layout: LayoutEnum;
-    position: PositionEnum;
     sidebarWidth: string;
     topbarHeight: string;
     collapsible: boolean;

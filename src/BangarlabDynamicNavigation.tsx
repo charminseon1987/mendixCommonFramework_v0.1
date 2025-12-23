@@ -67,19 +67,6 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
         });
     }, [props]);
 
-    // horizontal 레이아웃일 때 body에 padding-top 추가하여 페이지 콘텐츠가 네비게이션 바 아래에 위치하도록
-    useEffect(() => {
-        if (props.layout === "horizontal" && props.position === "top") {
-            const topbarHeight = props.topbarHeight || "60px";
-            document.body.style.paddingTop = topbarHeight;
-            
-            // cleanup 함수: 컴포넌트 언마운트 시 padding 제거
-            return () => {
-                document.body.style.paddingTop = "";
-            };
-        }
-    }, [props.layout, props.position, props.topbarHeight]);
-
     // 메뉴 데이터 로드
     useEffect(() => {
         if (props.menuDataSource.status !== ValueStatus.Available) {
@@ -157,6 +144,83 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
 
     // 메뉴 클릭 핸들러 (메뉴명 클릭 시 - 페이지 이동만, 메뉴 트리 변경 없음)
     const handleMenuClick = useCallback((
+        menuId: string,
+        pageURL: string | undefined,
+    ) => {
+        // 페이지 이동 전에 현재 확장 상태와 활성 메뉴를 localStorage에 저장
+        setState(prev => {
+            // 현재 확장 상태 저장
+            const expandedIds = getExpandedMenuIds(prev.menuTree);
+            saveExpandedMenuIds(expandedIds);
+            
+            // 활성 메뉴 ID 저장
+            saveActiveMenuId(menuId);
+            
+            return {
+                ...prev,
+                activeMenuId: menuId,
+                menuTree: prev.menuTree // 명시적으로 menuTree 유지
+                // 주의: menuTree는 변경하지 않음 - 메뉴명 클릭 시 확장/축소 없음
+            };
+        });
+
+        // 페이지 URL이 있으면 해당 페이지로 이동
+        if (pageURL) {
+            try {
+                // URL 형식인 경우 직접 이동
+                if (pageURL.startsWith('http://') || pageURL.startsWith('https://') || pageURL.startsWith('/')) {
+                    window.location.href = pageURL;
+                }
+                // Mendix 페이지 이름인 경우 mx API 사용
+                else {
+                    const mx = (window as any).mx;
+
+                    if (!mx) {
+                        console.error('[Widget] Mendix API (mx) is not available');
+                        return;
+                    }
+
+                    // Option 1: Mendix 9.12+ Navigation API (페이지 리로드 없이 이동)
+                    if (mx.navigation && typeof mx.navigation.navigate === 'function') {
+                        mx.navigation.navigate({
+                            page: pageURL,
+                            params: {}
+                        });
+                    }
+                    // Option 2: Legacy mx.ui.openForm API
+                    else if (mx.ui && typeof mx.ui.openForm === 'function') {
+                        mx.ui.openForm(pageURL, {
+                            location: "content",
+                            callback: function() {
+                                if (props.debugMode) {
+                                    console.log('[Widget] Page opened successfully');
+                                }
+                            },
+                            error: function(error: Error) {
+                                console.error('[Widget] Failed to open page:', error);
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('[Widget] Navigation error:', error);
+                if (props.debugMode) {
+                    console.error('[Widget] Navigation error details:', {
+                        error,
+                        pageURL
+                    });
+                }
+            }
+        }
+
+        // Mendix 액션 실행
+        if (props.onMenuClick && props.onMenuClick.canExecute) {
+            props.onMenuClick.execute();
+        }
+    }, [props]);
+
+    // 메뉴 클릭 핸들러 (메뉴명 클릭 시 - 페이지 이동만, 메뉴 트리 변경 없음)
+    const handleHorizontalMenuClick = useCallback((
         menuId: string,
         pageURL: string | undefined,
         hasChildren: boolean,
@@ -402,7 +466,6 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     const containerClasses = classNames(
         "bangarlab-navigation",
         `layout-${props.layout}`,
-        `position-${props.position}`,
         {
             collapsed: isCollapsed,
             "show-depth": props.showDepthIndicator
@@ -411,7 +474,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     );
 
     // 좌측 레이아웃 (세로형)
-    if (props.layout === "vertical" && props.position === "left") {
+    if (props.layout === "vertical") {
         return (
             <div className={containerClasses} style={cssVariables}>
                 <aside className="nav-sidebar" role="navigation" aria-label="Main navigation">
@@ -514,7 +577,8 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
     //         </div>
     //     );
     // }
-    if (props.layout === "horizontal" && props.position === "top") {
+    // Horizontal (Topbar)
+    if (props.layout === "horizontal") {
         return (
             <div className={containerClasses} style={cssVariables}>
                 <header className="nav-topbar" role="navigation" aria-label="Main navigation">
@@ -537,7 +601,7 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
                             <HorizontalNavigationMenu
                                 menuItems={state.menuTree}
                                 activeMenuId={state.activeMenuId}
-                                onMenuClick={handleMenuClick}
+                                onHorizontalMenuClick={handleHorizontalMenuClick}
                                 onToggleExpand={handleToggleExpand}
                                 depth={0}
                                 maxDepth={props.maxDepth}
@@ -569,6 +633,63 @@ export function BangarlabDynamicNavigation(props: BangarlabDynamicNavigationCont
             </div>
         );
     }
+
+    if (props.layout === "topbar_fullwidth") {
+        return (
+            <div className={containerClasses} style={cssVariables}>
+                <header className="nav-topbar" role="navigation" aria-label="Main navigation">
+                    <div className="nav-topbar-inner">
+                        {/* 왼쪽: 홈 버튼 */}
+                        <div className="nav-topbar-left">
+                            <button
+                                className="nav-title nav-title-button"
+                                onClick={handleHomeClick}
+                                title="홈으로 이동"
+                                aria-label="홈으로 이동"
+                                type="button"
+                            >
+                                홈
+                            </button>
+                        </div>
+    
+                        {/* 중앙: 메뉴 */}
+                        <nav className="nav-topbar-center">
+                            <HorizontalNavigationMenu
+                                menuItems={state.menuTree}
+                                activeMenuId={state.activeMenuId}
+                                onHorizontalMenuClick={handleHorizontalMenuClick}
+                                onToggleExpand={handleToggleExpand}
+                                depth={0}
+                                maxDepth={props.maxDepth}
+                                showDepthIndicator={props.showDepthIndicator}
+                            />
+                        </nav>
+    
+                        {/* 오른쪽: 컨트롤 버튼 (햄버거 아이콘) */}
+                        <div className="nav-topbar-right">
+                            {/* 컨트롤 버튼 */}
+                            <div className="nav-controls">
+                                <button
+                                    className={classNames("nav-control-btn hamburger-btn", {
+                                        "is-open": isAllExpanded
+                                    })}
+                                    onClick={handleToggleMenuDropdown}
+                                    title={isAllExpanded ? "모두 접기" : "모두 펼치기"}
+                                    aria-label={isAllExpanded ? "모두 접기" : "모두 펼치기"}
+                                    type="button"
+                                >
+                                    <span className="hamburger-line"></span>
+                                    <span className="hamburger-line"></span>
+                                    <span className="hamburger-line"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+        );
+    }
+
 
     // 기본 레이아웃
     return (

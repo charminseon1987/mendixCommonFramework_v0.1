@@ -155,17 +155,10 @@
                 <enumerationValues>
                     <enumerationValue key="vertical">Vertical (Sidebar)</enumerationValue>
                     <enumerationValue key="horizontal">Horizontal (Topbar)</enumerationValue>
+                    <enumerationValue key="topbar_fullwidth">Horizontal (Topbar Fullwidth)</enumerationValue>
                 </enumerationValues>
             </property>
-            
-            <property key="position" type="enumeration" defaultValue="left">
-                <caption>Navigation Position</caption>
-                <description>Position of navigation menu</description>
-                <enumerationValues>
-                    <enumerationValue key="left">Left Side</enumerationValue>
-                    <enumerationValue key="top">Top</enumerationValue>
-                </enumerationValues>
-            </property>
+        
             
             <property key="sidebarWidth" type="string" defaultValue="260px">
                 <caption>Sidebar Width</caption>

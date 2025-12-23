@@ -9,7 +9,7 @@ import "../ui/HorizontalNavigation.scss";
 interface HorizontalNavigationProps {
   menuTree: MenuTreeNode[];
   activeMenuId: string | null;
-  onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean) => void;
+  onHorizontalMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean, depth: number) => void;
   onToggleExpand: (menuId: string) => void;
   onHomeClick: () => void;
   maxDepth: number;
@@ -20,7 +20,7 @@ interface HorizontalNavigationProps {
 export function HorizontalNavigation({
   menuTree,
   activeMenuId,
-  onMenuClick,
+  onHorizontalMenuClick,
   onToggleExpand,
   onHomeClick,
   maxDepth,
@@ -76,7 +76,7 @@ export function HorizontalNavigation({
               item={item}
               isActive={activeMenuId === item.menuId}
               activeMenuId={activeMenuId}
-              onMenuClick={onMenuClick}
+              onHorizontalMenuClick={onHorizontalMenuClick}
               onToggleExpand={handleMenuToggle}
               depth={0}
               maxDepth={maxDepth}

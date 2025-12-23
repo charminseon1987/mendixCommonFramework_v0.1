@@ -7,23 +7,23 @@ import { HorizontalMenuItem } from "./HorizontalMenuItem";
 interface HorizontalNavigationMenuProps {
   menuItems: MenuTreeNode[];
   activeMenuId: string | null;
-  onMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean, depth: number) => void;
+  onHorizontalMenuClick: (menuId: string, pageURL: string | undefined, hasChildren: boolean, depth: number) => void;
   onToggleExpand: (menuId: string) => void;
   depth: number;
   maxDepth: number;
   showDepthIndicator: boolean;
-  layout?: 'vertical' | 'horizontal';
+  layout?: 'vertical' | 'horizontal'|'topbar_fullwidth';
 }
 
 export function HorizontalNavigationMenu({
   menuItems,
   activeMenuId,
-  onMenuClick,
+  onHorizontalMenuClick,
   onToggleExpand,
   depth=0,
   maxDepth=2,
   showDepthIndicator=false,
-  layout='horizontal'
+  layout
 }: HorizontalNavigationMenuProps): ReactElement {
   if (!menuItems || menuItems.length === 0) {
     return (
@@ -32,9 +32,12 @@ export function HorizontalNavigationMenu({
       </div>
     );
   }
+
+
  
   //Horizontal 의 서브메뉴 (depth 1+)
   return (
+  
    <ul className={`horizontal-menu-depth-${depth}`} role="menu">
     {menuItems.map(item=>(
       <HorizontalMenuItem 
@@ -42,7 +45,7 @@ export function HorizontalNavigationMenu({
         item={item} 
         isActive={activeMenuId === item.menuId} 
         activeMenuId={activeMenuId} 
-        onMenuClick={onMenuClick} 
+        onHorizontalMenuClick={onHorizontalMenuClick} 
         onToggleExpand={onToggleExpand} 
         depth={depth} 
         maxDepth={maxDepth} 
@@ -50,5 +53,6 @@ export function HorizontalNavigationMenu({
         layout={layout} />
     ))}
     </ul>
+  
   );
 }
