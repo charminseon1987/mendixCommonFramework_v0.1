@@ -14,7 +14,7 @@ interface HorizontalMenuItemProps {
   depth: number;
   maxDepth: number;
   showDepthIndicator: boolean;
-  layout?: 'vertical' | 'horizontal' | 'topbar_fullwidth';
+  layout?: 'vertical' | 'horizontal';
 }
 
 export function HorizontalMenuItem({
@@ -26,7 +26,7 @@ export function HorizontalMenuItem({
   depth,
   maxDepth,
   showDepthIndicator,
-  layout
+  layout = 'horizontal'
 }: HorizontalMenuItemProps): ReactElement {
   const hasChildren = item.children && item.children.length > 0;
   const canExpand = hasChildren && depth < maxDepth;
@@ -126,7 +126,7 @@ export function HorizontalMenuItem({
           
 
           <ul className={`horizontal-menu-item-submenu depth-${depth + 1}`} role="menu">
-            {depth === 0 && layout === 'topbar_fullwidth' && <a>{item.menuName}</a>}
+            {depth === 0 &&  <a>{item.menuName}</a>}
             {item.children.map(child => (
               <HorizontalMenuItem 
               key={child.menuId} 

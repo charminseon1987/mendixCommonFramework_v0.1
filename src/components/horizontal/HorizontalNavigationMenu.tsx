@@ -12,7 +12,7 @@ interface HorizontalNavigationMenuProps {
   depth: number;
   maxDepth: number;
   showDepthIndicator: boolean;
-  layout?: 'vertical' | 'horizontal'|'topbar_fullwidth';
+  layout?: 'vertical' | 'horizontal';
 }
 
 export function HorizontalNavigationMenu({
@@ -23,7 +23,7 @@ export function HorizontalNavigationMenu({
   depth=0,
   maxDepth=2,
   showDepthIndicator=false,
-  layout
+  layout = 'horizontal'
 }: HorizontalNavigationMenuProps): ReactElement {
   if (!menuItems || menuItems.length === 0) {
     return (

@@ -25,7 +25,7 @@
     "test:unit": "pluggable-widgets-tools test:unit:web --coverage",
     "prerelease": "npm run lint",
     "release": "pluggable-widgets-tools release:web"
-  },
+  },  
   "devDependencies": {
     "@mendix/pluggable-widgets-tools": "^10.15.0",
     "@types/big.js": "^6.0.2",

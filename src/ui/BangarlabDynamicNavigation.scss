@@ -883,6 +883,9 @@
             align-items: stretch; // 👈 전체 너비 사용
             gap: 0; // 👈 아이템 간 간격 제거
             
+            a{
+              display: none;
+            }
             .horizontal-menu-item {
               position: relative;
               width: 100%; // 👈 전체 너비 사용하여 세로 배치
